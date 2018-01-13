@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+
+    <div class="col-lg-9" style="word-wrap: break-word;">
+    {% for post in object_list %}
+      {% if post.image %} <p> <img src='{{ post.image.url }}' class='img-responsive'> </p> {% endif %}
+       <a href="{{post.get_absolute_url}}" > <h3 class="ctitle">{{ post.title }}</h3> </a>
+
+       {% if post.draft %} <h4 class="ctitle">Staff only: Draft</h4> {% endif %}
+       {% if post.publish > today %}<h4 class="ctitle">Staff Only: Future Post</h4> {% endif %}
+       {% if post.user.get_full_name %} <p><csmall> Posted: {{ post.publish }} </csmall>|<csmall2> By: {{ post.user.get_full_name }}<csmall2> {% endif %}
+       <p>{{ post.get_markdown|truncatechars_html:350 }} <a href={{post.get_absolute_url}}>[Read More]</a>  </p>
+        <csmall2> Labels : </csmall2>
+        {% for tag in post.get_tag_list %}
+          <a href="blog/tag/{{ tag }}/"><csmall> {{ tag }} </csmall></a>{% if not forloop.last %}, {% endif %}
+       {% endfor %}
+       <div class="hline"></div>
+
+    {% endfor %}
+
+    <div class="pagination">
+          <span class="step-links">
+              {% if object_list.has_previous %}
+                  <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+              {% endif %}
+              <span class="current">
+               {% if object_list.paginator.num_pages %}   Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}. {% endif %}
+              </span>
+              {% if object_list.has_next %}
+                  <a href="?{{ page_request_var }}={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+              {% endif %}
+          </span>
+    </div>
+
+   </div>
+{% endblock content %}
+
+
+
+
+

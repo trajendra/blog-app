@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head_extra %}
+{{ form.media }}
+{% endblock head_extra %}
+
+{% block total_content %}
+
+ <div class="container-fluid">
+  <div class='row'>
+  <h1>Form</h1> <hr/> {% csrf_token %}
+      {% crispy form %}
+  </div>
+ </div>
+
+{% endblock total_content %}
