@@ -4,7 +4,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ylfe!ogn2og%iqpq7ln0$_i+vvv^%hv#9=d@zh*62e4$b28^&s'
+#SECRET_KEY = 'ylfe!ogn2og%iqpq7ln0$_i+vvv^%hv#9=d@zh*62e4$b28^&s'
+
+SECRET_KEY = config('SECRET_KEY')
+
+DEBUG = config('DEBUG', default=False, cast=bool)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -106,9 +111,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myblog.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 
         #'ENGINE': 'sql_server.pyodbc',
         #'NAME': 'SQLAzureDB',
@@ -125,8 +136,8 @@ DATABASES = {
         #'HOST': 'dbserver\\ss2008',
         #'USER': '',
         #'PASSWORD': '',
-    }
-}
+#    }
+#}
 
 # set this to False if you want to turn off pyodbc's connection pooling
 #DATABASE_CONNECTION_POOLING = False
@@ -304,3 +315,11 @@ SOCIALACCOUNT_PROVIDERS = \
 
           }
 
+# Update database configuration with $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+ALLOWED_HOSTS = ['*']
